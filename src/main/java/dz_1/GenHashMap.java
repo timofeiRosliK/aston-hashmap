@@ -1,11 +1,15 @@
 package dz_1;
 
 public class GenHashMap<K, V> implements GenMap<K, V> {
+
     private Node<K, V>[] table;
     private static final int INITIAL_CAPACITY = 16;
+    private static final float DEFAULT_LOAD_FACTOR = 0.75f;
+    private int threshold;
     private int size = 0;
 
-    public GenHashMap(){
+
+    public GenHashMap() {
         this(INITIAL_CAPACITY);
     }
 
@@ -19,17 +23,25 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
         return key.hashCode();
     }
 
+    public void resize() {
+        int newLength = table.length * 2;
+        Node<K, V>[] newTable = new Node[newLength];
 
+        System.arraycopy(table, 0, newTable, 0, table.length);
+        table = newTable;
 
-//    public boolean equalsKey(K key){
-//        return this.equals(key);
-//    }
+        threshold = (int) (INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
+    }
 
     @Override
     public void put(K key, V value) {
-        Node<K, V> entry = new Node<>(key, value, null);
-        int position = getHash(key) % table.length;
 
+        if (size >= threshold) {
+            resize();
+        }
+
+        Node<K, V> entry = new Node<>(key, value, null);
+        int position = Math.abs(getHash(key) % table.length);
         Node<K, V> existing = table[position];
 
         if (entry.getKey() == null) {
@@ -52,7 +64,6 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
             }
 
 
-
             // check the last element
             if (existing.getKey().equals(key)) {
                 existing.setValue(value);
@@ -67,14 +78,14 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
 
     @Override
     public V get(K key) {
-        int position = getHash(key) % table.length;
-        Node<K, V> element = table[position];
+        int position = Math.abs(getHash(key) % table.length);
+        Node<K, V> existing = table[position];
 
-        while (element.next != null) {
-            if (element.getKey().equals(key)) {
-                return element.getValue();
+        while (existing!= null) {
+            if (existing.getKey().equals(key)) {
+                return existing.getValue();
             }
-            element = element.next;
+            existing = existing.next;
         }
         return null;
     }
@@ -85,15 +96,16 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
             return;
         }
 
-        int position = getHash(key) & table.length;
+        int position = Math.abs(getHash(key) % table.length);
 
         Node<K, V> current = table[position];
         Node<K, V> prev = null;
-        while (current.next != null) {
+
+        while (current != null) {
             if (current.getKey().equals(key)) {
-                if(prev == null) {
+                if (prev == null) {
                     table[position] = current.next;
-                }else {
+                } else {
                     prev.next = current.next;
                 }
                 size--;
@@ -104,8 +116,29 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
         }
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        for (Node<K, V> node : table) {
+            Node<K, V> current = node;
+            while (current != null) {
+                sb.append("{")
+                        .append(current.getKey())
+                        .append(" = ")
+                        .append(current.getValue())
+                        .append("}, ");
+                current = current.next;
+            }
+        }
+        if(!sb.isEmpty()){
+            sb.setLength(sb.length() - 2);
+        }
+        return "{" + sb + "}";
+    }
+
     @Override
     public int size() {
         return size;
     }
+
 }
