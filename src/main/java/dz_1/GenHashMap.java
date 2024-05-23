@@ -1,10 +1,12 @@
 package dz_1;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GenHashMap<K, V> implements GenMap<K, V> {
 
-    public static class Node<K, V> {
+    private static class Node<K, V> {
         private final K key;
         private V value;
         Node<K,V> next;
@@ -25,11 +27,6 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
 
         public void setValue(V value) {
             this.value = value;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(key);
         }
 
         @Override
@@ -66,11 +63,6 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
         int position = getPosition(key);
         Node<K, V> existing = table[position];
 
-        if (entry.getKey() == null) {
-            table[0] = entry;
-            size++;
-        }
-
         if (existing == null) {
             table[position] = entry;
             size++;
@@ -83,6 +75,11 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
                 }
                 existing = existing.next;
 
+            }
+
+            if(existing.getKey() == null){
+                existing.setValue(value);
+                return;
             }
 
             if (existing.getKey().equals(key)) {
@@ -135,23 +132,17 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        String keyValueTemplate = "{%s = %s}";
+        List<String> pairs = new ArrayList<>();
 
-        for (Node<K, V> node : table) {
-            Node<K, V> current = node;
+        for (Node<K, V> current : table) {
             while (current != null) {
-                sb.append("{")
-                        .append(current.getKey())
-                        .append(" = ")
-                        .append(current.getValue())
-                        .append("}, ");
+                pairs.add(String.format(keyValueTemplate, current.key, current.value));
                 current = current.next;
             }
         }
-        if(!sb.isEmpty()){
-            sb.setLength(sb.length() - 2);
-        }
-        return "{" + sb + "}";
+        return "{" + pairs.stream()
+                .collect(Collectors.joining(", ")) + "}";
     }
 
     @Override
@@ -170,7 +161,10 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
     }
 
     public int getPosition(K key){
-        return key.hashCode() & (table.length - 1);
+        if(key == null){
+            return 0;
+        }
+        return Math.abs(getHash(key) & INITIAL_CAPACITY - 1);
     }
 
 }
