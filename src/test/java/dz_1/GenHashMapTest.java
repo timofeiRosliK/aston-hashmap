@@ -1,7 +1,6 @@
-package junit.service;
+package dz_1;
 
 import dz_1.GenHashMap;
-import dz_1.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,13 +9,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class GenHashMapTest<K, V> {
     private GenHashMap<String, Integer> genHashMap;
-    private Node<String, Integer>[] table;
+    private GenHashMap.Node<String, Integer>[] table;
     private  int size;
 
     @BeforeEach
     void setup(){
         size = 16;
-        table = new Node[size];
+        table = new GenHashMap.Node[size];
         genHashMap = new GenHashMap<>();
     }
 
