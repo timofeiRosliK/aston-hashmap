@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class GenHashMapTest {
     private GenHashMap<String, String> genHashMap;
+    private GenHashMap<Object, Object> bigHashMap;
 
     @BeforeEach
     void setup() {
@@ -28,6 +29,11 @@ class GenHashMapTest {
         genHashMap.put("France", "Paris");
         genHashMap.put("Spain", "Madrid");
         genHashMap.put("Portugal", "Lisbon");
+
+        bigHashMap = new GenHashMap<>();
+        for (int i = 0; i < 1000; i++) {
+            bigHashMap.put(i, i);
+        }
     }
 
     @Test
@@ -39,6 +45,7 @@ class GenHashMapTest {
         assertEquals(size + 1, genHashMap.size());
         assertNotNull(genHashMap);
     }
+
 
     @Test
     void put_WhenKeyIsDuplicated_ShouldRewriteValue() {
@@ -60,7 +67,20 @@ class GenHashMapTest {
     }
 
     @Test
-    void get_WhenGettingElementInHashMap_ShouldElementGet(){
+    void put_WhenPutLargeAmountOfElementsInHashMap_ShouldIncreaseSize(){
+        int size = bigHashMap.size();
+
+        for (int i = 1001; i < 2001; i++) {
+            bigHashMap.put(i, i);
+        }
+
+        assertEquals(size + 1000, bigHashMap.size() );
+        assertNotNull(bigHashMap);
+    }
+
+
+    @Test
+    void get_WhenGettingElementFromHashMap_ShouldElementGet(){
         String actual = genHashMap.get("Belarus");
 
         assertEquals("Minsk", actual);
@@ -74,6 +94,14 @@ class GenHashMapTest {
     }
 
     @Test
+    void get_WhenGettingBigNumberOfElementFromBigHashMap_ShouldElementGet(){
+        for (int i = 0; i < 1000; i++) {
+            Object actual = bigHashMap.get(i);
+            assertEquals(i, actual);
+        }
+    }
+
+    @Test
     void remove_WhenRemoveElement_ShouldElementRemove(){
         int size = genHashMap.size();
 
@@ -83,7 +111,18 @@ class GenHashMapTest {
     }
 
     @Test
-    void remove_WhenKeyIsNotExist_ShouldSizeRemain(){
+    void remove_WhenRemoveBigNumberOfElements_ShouldElementsRemove(){
+        int size = bigHashMap.size();
+
+        for (int i = 0; i < 998; i++) {
+            bigHashMap.remove(i);
+        }
+
+        assertEquals(2, bigHashMap.size());
+    }
+
+    @Test
+    void remove_WhenKeyIsNotExisted_ShouldSizeRemain(){
         int size = genHashMap.size();
 
         genHashMap.remove("Egypt");

@@ -2,7 +2,6 @@ package dz_1;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GenHashMap<K, V> implements GenMap<K, V> {
 
@@ -212,16 +211,17 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
     /**
      * This is a method that doubles the capacity of hash map.
      * This method is called when the number of elements exceeds the threshold.
-     * The new threshold is recalculated based on the initial capacity and load factor.
+     * The new threshold is recalculated based on the new length and load factor.
      */
     public void resize() {
         int newLength = table.length * 2;
         Node<K, V>[] newTable = new Node[newLength];
 
-        System.arraycopy(table, 0, newTable, 0, table.length);
+        System.arraycopy(table, 0, newTable,0, table.length);
+
         table = newTable;
 
-        threshold = (int) (INITIAL_CAPACITY * DEFAULT_LOAD_FACTOR);
+        threshold = (int) (newLength * DEFAULT_LOAD_FACTOR);
     }
 
     /**
