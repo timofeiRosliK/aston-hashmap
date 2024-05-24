@@ -3,6 +3,14 @@ package dz_1;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * GenHashMap is a class that represents key-value storage
+ *
+ * @param <K> key that is associated with specified value
+ * @param <V> value that is associated with specified key
+ *
+ * @author Timofei Roslik
+ */
 public class GenHashMap<K, V> implements GenMap<K, V> {
 
     private static class Node<K, V> {
