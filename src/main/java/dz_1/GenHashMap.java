@@ -12,8 +12,6 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
         Node<K, V> next;
 
         /**
-         *
-         *
          * @param key the key that associated with node
          * @param value the value that associated with node
          * @param next the next node in the chain
@@ -47,7 +45,6 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
          *
          * @param value the new value associated with the node
          */
-
         public void setValue(V value) {
             this.value = value;
         }
@@ -163,7 +160,6 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
      * If the key is found, the element is removed and the size is decremented by one.
      * @param key the key that is associated with specified value.
      */
-
     @Override
     public void remove(K key) {
         if (key == null) {
@@ -200,8 +196,7 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
                 current = current.next;
             }
         }
-        return "{" + pairs.stream()
-                .collect(Collectors.joining(", ")) + "}";
+        return "{" + String.join(", ", pairs) + "}";
     }
 
     /**
@@ -235,12 +230,11 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
      * @param key the key whose position is calculated
      * @return the index of key
      */
-
     public int getPosition(K key) {
         if (key == null) {
             return 0;
         }
-        return Math.abs(getHash(key) & INITIAL_CAPACITY - 1);
+        return Math.abs(getHash(key) % INITIAL_CAPACITY);
     }
 
 }
