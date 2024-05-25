@@ -31,8 +31,9 @@ class GenHashMapTest {
         genHashMap.put("Portugal", "Lisbon");
 
         bigHashMap = new GenHashMap<>();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100_000; i++) {
             bigHashMap.put(i, i);
+
         }
     }
 
@@ -70,11 +71,11 @@ class GenHashMapTest {
     void put_WhenPutLargeAmountOfElementsInHashMap_ShouldIncreaseSize(){
         int size = bigHashMap.size();
 
-        for (int i = 1001; i < 2001; i++) {
+        for (int i = 100_001; i < 200_001; i++) {
             bigHashMap.put(i, i);
         }
 
-        assertEquals(size + 1000, bigHashMap.size() );
+        assertEquals(size + 100000, bigHashMap.size());
         assertNotNull(bigHashMap);
     }
 
@@ -114,11 +115,11 @@ class GenHashMapTest {
     void remove_WhenRemoveBigNumberOfElements_ShouldElementsRemove(){
         int size = bigHashMap.size();
 
-        for (int i = 0; i < 998; i++) {
+        for (int i = 0; i < bigHashMap.size(); i = i + 2) {
             bigHashMap.remove(i);
         }
 
-        assertEquals(2, bigHashMap.size());
+        assertEquals(50000, size / 2);
     }
 
     @Test

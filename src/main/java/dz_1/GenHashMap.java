@@ -225,8 +225,13 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
         int newLength = table.length * 2;
         Node<K, V>[] newTable = new Node[newLength];
 
-        System.arraycopy(table, 0, newTable,0, table.length);
-
+        for (Node<K,V> current : table){
+            while (current != null){
+                int newIndex = Math.abs(getHash(current.key) % newTable.length);
+                newTable[newIndex] = current;
+                current = current.next;
+            }
+        }
         table = newTable;
 
         threshold = (int) (newLength * DEFAULT_LOAD_FACTOR);
@@ -242,7 +247,7 @@ public class GenHashMap<K, V> implements GenMap<K, V> {
         if (key == null) {
             return 0;
         }
-        return Math.abs(getHash(key) % INITIAL_CAPACITY);
+        return Math.abs(getHash(key) % table.length);
     }
 
 }
